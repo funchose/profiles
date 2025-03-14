@@ -1,15 +1,27 @@
 package com.telros.profiles.exceptions;
 
-import jakarta.validation.ConstraintViolationException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class CustomRestExceptionHandler {
+
+  /**
+   * Handles ProfileNotFoundException, which is thrown
+   * when the searched in the DB profile is absent
+   *
+   * @param ex exception
+   * @return response with HTTP code and exception message
+   */
   @ExceptionHandler({ProfileNotFoundException.class})
   public ResponseEntity<Object> handleUserNotFoundException(
       ProfileNotFoundException ex) {
@@ -18,6 +30,14 @@ public class CustomRestExceptionHandler {
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
   }
 
+  /**
+   * Handles HttpMessageNotReadableException, which is thrown
+   * when the HTTP request is invalid and cannot be parsed into
+   * entity of request class
+   *
+   * @param ex exception
+   * @return response with HTTP code and exception message
+   */
   @ExceptionHandler({HttpMessageNotReadableException.class})
   public ResponseEntity<Object> handleHttpMessageNotReadableException(
       HttpMessageNotReadableException ex) {
@@ -26,12 +46,28 @@ public class CustomRestExceptionHandler {
     return new ResponseEntity<>(
         errorResponse, new HttpHeaders(), errorResponse.status());
   }
-  @ExceptionHandler({ConstraintViolationException.class})
-  public ResponseEntity<Object> handleHttpMessageNotReadableException(
-      ConstraintViolationException ex) {
+
+  /**
+   * Handles MethodArgumentNotValidException, which is thrown
+   * when required arguments are absent. If the constraints are violated at the same time -
+   * they are handled here as well
+   *
+   * @param ex exception
+   * @return response with HTTP code and exception message
+   */
+  @ExceptionHandler({MethodArgumentNotValidException.class})
+  public ResponseEntity<Object> handleMethodArgumentNotValidException(
+      MethodArgumentNotValidException ex) {
     ErrorResponse errorResponse =
-        new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getConstraintViolations().toString());
+        new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    Map<String, List<String>> body = new HashMap<>();
+    List<String> errors = ex.getBindingResult()
+        .getFieldErrors()
+        .stream()
+        .map(DefaultMessageSourceResolvable::getDefaultMessage)
+        .toList();
+    body.put("errors", errors);
     return new ResponseEntity<>(
-        errorResponse, new HttpHeaders(), errorResponse.status());
+        body, new HttpHeaders(), errorResponse.status());
   }
 }

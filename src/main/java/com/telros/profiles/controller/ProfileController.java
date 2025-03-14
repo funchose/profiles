@@ -2,8 +2,9 @@ package com.telros.profiles.controller;
 
 import com.telros.profiles.DTO.ProfileContactsDTO;
 import com.telros.profiles.DTO.ProfileDTO;
-import com.telros.profiles.request.AddOrEditProfileRequest;
+import com.telros.profiles.request.AddProfileRequest;
 import com.telros.profiles.request.EditProfileContactsRequest;
+import com.telros.profiles.request.EditProfileRequest;
 import com.telros.profiles.service.ProfileService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -38,19 +39,19 @@ public class ProfileController {
   }
 
   @PostMapping(value = "/profiles")
-  public Long addProfile(@Valid @RequestBody AddOrEditProfileRequest request) {
+  public Long addProfile(@RequestBody @Valid AddProfileRequest request) {
     return profileService.addProfile(request);
   }
 
   @PutMapping(value = "/profiles/{id}")
   public Long editProfile(@PathVariable Long id,
-                          @RequestBody @Valid AddOrEditProfileRequest request) {
+                          @RequestBody @Valid EditProfileRequest request) {
     return profileService.editProfile(id, request);
   }
 
   @PutMapping(value = "profiles/contacts/{id}")
   public Long editProfileContacts(@PathVariable Long id,
-                                  @RequestBody EditProfileContactsRequest request) {
+                                  @RequestBody @Valid EditProfileContactsRequest request) {
     return profileService.editProfileContacts(id, request);
   }
 

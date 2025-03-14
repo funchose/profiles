@@ -9,7 +9,6 @@ public class ProfileContactsDTO {
   private final String email;
   private final String phoneNumber;
 
-
   public Long getId() {
     return id;
   }
