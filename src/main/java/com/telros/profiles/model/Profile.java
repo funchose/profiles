@@ -25,11 +25,12 @@ public class Profile {
   @Column(name = "birthdate")
   @NotNull
   private Date birthdate;
-  @Column(name = "email")
+  @Column(name = "email", unique = true)
   @NotNull
   @Email
+
   private String email;
-  @Column(name = "phone_number")
+  @Column(name = "phone_number", unique = true)
   private String phoneNumber;
 
   public Long getId() {

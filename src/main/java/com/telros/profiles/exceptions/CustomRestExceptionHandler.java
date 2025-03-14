@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,5 +70,22 @@ public class CustomRestExceptionHandler {
     body.put("errors", errors);
     return new ResponseEntity<>(
         body, new HttpHeaders(), errorResponse.status());
+  }
+
+  /**
+   * Handles DataIntegrityViolationException, which is thrown
+   * when the request entity contains parameters of entity, which must be unique
+   * but already present in the DB (email, phone number)
+   *
+   * @param ex exception
+   * @return response with HTTP code and exception message
+   */
+  @ExceptionHandler({DataIntegrityViolationException.class})
+  public ResponseEntity<Object> handlerDataIntegrityViolationException(
+      DataIntegrityViolationException ex) {
+    ErrorResponse errorResponse =
+        new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    return new ResponseEntity<>(
+        errorResponse, new HttpHeaders(), errorResponse.status());
   }
 }
