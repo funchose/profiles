@@ -7,30 +7,29 @@ import jakarta.validation.constraints.NotNull;
 import java.sql.Date;
 
 @Entity
-@Table(name = "profile ")
+@Table(name = "profile")
 public class Profile {
   @Column(name = "id")
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "profile_generator")
   @SequenceGenerator(name = "profile_generator", sequenceName = "profile_seq", allocationSize = 1)
   private Long id;
-  @Column(name = "last_name")
+  @Column(name = "last_name", length = 50)
   @NotBlank
   private String lastName;
-  @Column(name = "first_name")
+  @Column(name = "first_name", length = 50)
   @NotBlank
   private String firstName;
-  @Column(name = "middle_name")
+  @Column(name = "middle_name", length = 50)
   private String middleName;
   @Column(name = "birthdate")
   @NotNull
   private Date birthdate;
-  @Column(name = "email", unique = true)
+  @Column(name = "email", unique = true, length = 50)
   @NotNull
   @Email
-
   private String email;
-  @Column(name = "phone_number", unique = true)
+  @Column(name = "phone_number", unique = true, length = 15)
   private String phoneNumber;
 
   public Long getId() {
