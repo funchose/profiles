@@ -7,10 +7,84 @@
 	},
 	"item": [
 		{
-			"name": "Get Profiles",
+			"name": "Sign Up",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
 			"request": {
 				"auth": {
 					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"firstName\": \"firstname\", \r\n  \"lastName\": \"lastname\",\r\n  \"middleName\": \"middlename\",\r\n  \"birthdate\": \"2000-12-31\",\r\n  \"email\": \"example@org.com\",\r\n  \"phoneNumber\": \"12345678910\",\r\n  \"username\": \"admin\",\r\n  \"password\":\"admin\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/auth/sign-up",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"sign-up"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sign In",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"admin\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/auth/sign-in",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"sign-in"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Profiles",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwic3ViIjoiYWRtaW4iLCJpYXQiOjE3NDIwNzUwNTksImV4cCI6MTc0MjA3ODA2MH0.BuOC5BsfnBZ1UfQoy0ka64UhBe6-DkmI6mjWBZhyi-Y",
+							"type": "string"
+						}
+					]
 				},
 				"method": "GET",
 				"header": [],
@@ -32,7 +106,14 @@
 			"name": "Get Profiles Contacts",
 			"request": {
 				"auth": {
-					"type": "noauth"
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwic3ViIjoiYWRtaW4iLCJpYXQiOjE3NDIwNzUwNTksImV4cCI6MTc0MjA3ODA2MH0.BuOC5BsfnBZ1UfQoy0ka64UhBe6-DkmI6mjWBZhyi-Y",
+							"type": "string"
+						}
+					]
 				},
 				"method": "GET",
 				"header": [],
@@ -52,88 +133,20 @@
 			"response": []
 		},
 		{
-			"name": "Post Profile",
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"firstName\": \"firstname\", \r\n  \"lastName\": \"lastname\",\r\n  \"middleName\": \"middlename\",\r\n  \"birthdate\": \"2000-12-31\",\r\n  \"email\": \"example@org.com\",\r\n  \"phoneNumber\": \"12345678910\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/profiles",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"profiles"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Edit Profile",
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"firstName\": \"new_firstname\", \r\n  \"lastName\": \"new_lastname\",\r\n  \"middleName\": \"new_middlename\",\r\n  \"birthdate\": \"2005-02-31\",\r\n  \"email\": \"example123@org.com\",\r\n  \"phoneNumber\": \"12345678999\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/profiles/1",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"profiles",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Get Profile By Id",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
 			"request": {
 				"auth": {
-					"type": "noauth"
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwic3ViIjoiYWRtaW4iLCJpYXQiOjE3NDIwNzUwNTksImV4cCI6MTc0MjA3ODA2MH0.BuOC5BsfnBZ1UfQoy0ka64UhBe6-DkmI6mjWBZhyi-Y",
+							"type": "string"
+						}
+					]
 				},
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
 				"url": {
 					"raw": "http://localhost:8080/profiles/1",
 					"protocol": "http",
@@ -151,24 +164,19 @@
 		},
 		{
 			"name": "Get Profile Contacts By Id",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
 			"request": {
 				"auth": {
-					"type": "noauth"
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwic3ViIjoiYWRtaW4iLCJpYXQiOjE3NDIwNzUwNTksImV4cCI6MTc0MjA3ODA2MH0.BuOC5BsfnBZ1UfQoy0ka64UhBe6-DkmI6mjWBZhyi-Y",
+							"type": "string"
+						}
+					]
 				},
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
 				"url": {
 					"raw": "http://localhost:8080/profiles/contacts/1",
 					"protocol": "http",
@@ -186,16 +194,62 @@
 			"response": []
 		},
 		{
-			"name": "Edit Profile Contacts By Id",
+			"name": "Edit Profile",
 			"request": {
 				"auth": {
-					"type": "noauth"
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwic3ViIjoiYWRtaW4iLCJpYXQiOjE3NDIwNzUwNTksImV4cCI6MTc0MjA3ODA2MH0.BuOC5BsfnBZ1UfQoy0ka64UhBe6-DkmI6mjWBZhyi-Y",
+							"type": "string"
+						}
+					]
 				},
 				"method": "PUT",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"firstName\": \"new_firstname\", \r\n  \"lastName\": \"new_lastname\",\r\n  \"email\": \"example456@org.com\",\r\n  \"phoneNumber\": \"12345678888\"\r\n}",
+					"raw": "  {\r\n    \"firstName\": \"new_firstname\", \r\n    \"lastName\": \"new_lastname\",\r\n    \"middleName\": \"new_middlename\",\r\n    \"birthdate\": \"2005-02-31\",\r\n    \"email\": \"example123@org.com\",\r\n    \"phoneNumber\": \"12345678999\"\r\n  }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/profiles/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"profiles",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Profile Contacts",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwic3ViIjoiYWRtaW4iLCJpYXQiOjE3NDIwNzUwNTksImV4cCI6MTc0MjA3ODA2MH0.BuOC5BsfnBZ1UfQoy0ka64UhBe6-DkmI6mjWBZhyi-Y",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "  {\r\n    \"firstName\": \"new_firstname\", \r\n    \"lastName\": \"new_lastname\",\r\n    \"email\": \"example456@org.com\",\r\n    \"phoneNumber\": \"12345678888\"\r\n  }",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -219,10 +273,17 @@
 			"response": []
 		},
 		{
-			"name": "Delete Profile By Id",
+			"name": "Delete Profile",
 			"request": {
 				"auth": {
-					"type": "noauth"
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwic3ViIjoiYWRtaW4iLCJpYXQiOjE3NDIwNzUwNTksImV4cCI6MTc0MjA3ODA2MH0.BuOC5BsfnBZ1UfQoy0ka64UhBe6-DkmI6mjWBZhyi-Y",
+							"type": "string"
+						}
+					]
 				},
 				"method": "DELETE",
 				"header": [],

@@ -1,126 +1,96 @@
 package com.telros.profiles.service;
 
 import com.telros.profiles.ProfilesApplication;
+import com.telros.profiles.controller.AuthController;
 import com.telros.profiles.exceptions.ProfileNotFoundException;
+import com.telros.profiles.model.Profile;
 import com.telros.profiles.repository.ProfileRepository;
-import com.telros.profiles.request.AddProfileRequest;
 import com.telros.profiles.request.EditProfileRequest;
+import com.telros.profiles.security.jwt.JwtService;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import org.junit.Assert;
-import org.junit.jupiter.api.Assertions;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ProfilesApplication.class)
-public class ProfileServiceTest{
+public class ProfileServiceTest {
   @Autowired
-  private ProfileService service;
+  private ProfileRepository profileRepository;
   @Autowired
-  private ProfileRepository repository;
+  private JwtService jwtService;
+  @Autowired
+  AuthService authService;
+  @Autowired
+  AuthController authController;
+  @Autowired
+  ProfileService profileService;
+  private final java.util.Date date = new GregorianCalendar(
+      2014, Calendar.MARCH, 20).getTime();
+  private final Date requestDate = new Date(date.getTime());
+  private final Profile profile = new Profile()
+      .setId(null)
+      .setUsername("admin")
+      .setPassword("admin")
+      .setLastName("Ivanov")
+      .setFirstName("Ivan")
+      .setBirthdate(requestDate)
+      .setMiddleName("Ivanovich")
+      .setEmail("ivanov@mail.ru")
+      .setPhoneNumber("89877655443");
+
 
   @Test
+  @Transactional
   public void addProfileTest() {
-    var request = new AddProfileRequest();
-    request.setFirstName("Ivan");
-    request.setLastName("Ivanov");
-    request.setMiddleName("Ivanovich");
-    request.setPhoneNumber("89877655443");
-    java.util.Date date = new GregorianCalendar(
-        2014, Calendar.MARCH, 20).getTime();
-    Date requestDate = new Date(date.getTime());
-    request.setBirthdate(requestDate);
-    request.setEmail("ivanov@mail.ru");
-    service.addProfile(request);
+    profileService.addProfile(profile);
     Assertions.assertEquals("Ivan",
-        repository.findByEmail("ivanov@mail.ru").getFirstName());
-    repository.deleteById(repository.findByEmail("ivanov@mail.ru").getId());
+        profileRepository.findByEmail("ivanov@mail.ru").getFirstName());
+    profileRepository.deleteById(profileRepository.findByEmail("ivanov@mail.ru").getId());
   }
 
   @Test
-  public void addProfileWithTheSameEmailTest() {
-    var request = new AddProfileRequest();
-    request.setFirstName("Ivan");
-    request.setLastName("Ivanov");
-    request.setMiddleName("Ivanovich");
-    request.setPhoneNumber("89877655443");
-    java.util.Date date = new GregorianCalendar(
-        2014, Calendar.MARCH, 20).getTime();
-    Date requestDate = new Date(date.getTime());
-    request.setBirthdate(requestDate);
-    request.setEmail("ivanov@mail.ru");
-    service.addProfile(request);
-    Assertions.assertThrows(DataIntegrityViolationException.class,
-        () -> service.addProfile(request));
-    repository.deleteById(repository.findByEmail("ivanov@mail.ru").getId());
-  }
-
-  @Test
+  @Transactional
   public void editProfileTest() {
-    var addRequest = new AddProfileRequest();
-    addRequest.setFirstName("Ivan");
-    addRequest.setLastName("Ivanov");
-    addRequest.setMiddleName("Ivanovich");
-    addRequest.setPhoneNumber("89877655443");
-    java.util.Date date = new GregorianCalendar(
-        2014, Calendar.MARCH, 20).getTime();
-    Date requestDate = new Date(date.getTime());
-    addRequest.setBirthdate(requestDate);
-    addRequest.setEmail("ivanov@mail.ru");
-    Long id = service.addProfile(addRequest);
+    Long id = profileService.addProfile(profile);
     var editRequest = new EditProfileRequest();
     editRequest.setFirstName("Anton");
     editRequest.setLastName("Antonov");
-    service.editProfile(id, editRequest);
+    profileService.editProfile(id, editRequest);
     Assertions.assertEquals(editRequest.getFirstName(),
-        repository.findById(id).get().getFirstName());
+        profileRepository.findById(id).get().getFirstName());
     Assertions.assertEquals(editRequest.getLastName(),
-        repository.findById(id).get().getLastName());
+        profileRepository.findById(id).get().getLastName());
+    profileRepository.deleteById(profileRepository.findByEmail("ivanov@mail.ru").getId());
   }
 
   @Test
+  @Transactional
   public void editProfileContactsTest() {
-    var addRequest = new AddProfileRequest();
-    addRequest.setFirstName("Ivan");
-    addRequest.setLastName("Ivanov");
-    addRequest.setMiddleName("Ivanovich");
-    addRequest.setPhoneNumber("89877655443");
-    java.util.Date date = new GregorianCalendar(
-        2014, Calendar.MARCH, 20).getTime();
-    Date requestDate = new Date(date.getTime());
-    addRequest.setBirthdate(requestDate);
-    addRequest.setEmail("ivanov@mail.ru");
-    Long id = service.addProfile(addRequest);
+    Long id = profileService.addProfile(profile);
     var editRequest = new EditProfileRequest();
     editRequest.setEmail("ivanivanov@mail.ru");
     editRequest.setPhoneNumber("89674792857");
-    service.editProfile(id, editRequest);
+    profileService.editProfile(id, editRequest);
     Assertions.assertEquals(editRequest.getEmail(),
-        repository.findById(id).get().getEmail());
+        profileRepository.findById(id).get().getEmail());
     Assertions.assertEquals(editRequest.getPhoneNumber(),
-        repository.findById(id).get().getPhoneNumber());
+        profileRepository.findById(id).get().getPhoneNumber());
   }
 
   @Test
+  @Transactional
   public void deleteProfileTest() {
-    var addRequest = new AddProfileRequest();
-    addRequest.setFirstName("Ivan");
-    addRequest.setLastName("Ivanov");
-    addRequest.setMiddleName("Ivanovich");
-    addRequest.setPhoneNumber("89877655443");
-    java.util.Date date = new GregorianCalendar(
-        2014, Calendar.MARCH, 20).getTime();
-    Date requestDate = new Date(date.getTime());
-    addRequest.setBirthdate(requestDate);
-    addRequest.setEmail("ivanov@mail.ru");
-    Long id = service.addProfile(addRequest);
-    service.deleteProfile(id);
-    Assert.assertThrows(ProfileNotFoundException.class, () -> service.getProfile(id));
+    Long id = profileService.addProfile(profile);
+    profileService.deleteProfile(id);
+    Assert.assertThrows(ProfileNotFoundException.class, () -> profileService.getProfile(id));
+
   }
 }

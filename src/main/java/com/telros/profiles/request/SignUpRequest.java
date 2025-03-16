@@ -1,10 +1,21 @@
 package com.telros.profiles.request;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import java.sql.Date;
 
-public class AddProfileRequest {
+public class SignUpRequest {
+  @Size(min = 5, max = 25,
+      message = "Имя пользователя должно содержать от 5 до 25 символов")
+  @NotBlank(message = "Имя пользователя не может быть пустым")
+  private String username;
+
+  @Size(min = 5, max = 25,
+      message = "Длина пароля не должна быть меньше 5 и больше 25 символов")
+  @NotBlank(message = "Пароль не может быть пустым")
+  private String password;
   @NotEmpty(message = "Поле lastName не должно быть пустым")
   private String lastName;
   @NotEmpty(message = "Поле firstName не должно быть пустым")
@@ -63,5 +74,13 @@ public class AddProfileRequest {
 
   public String getPhoneNumber() {
     return phoneNumber;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public String getPassword() {
+    return password;
   }
 }

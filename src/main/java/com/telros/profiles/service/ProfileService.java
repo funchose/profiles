@@ -5,16 +5,19 @@ import com.telros.profiles.DTO.ProfileDTO;
 import com.telros.profiles.exceptions.ProfileNotFoundException;
 import com.telros.profiles.model.Profile;
 import com.telros.profiles.repository.ProfileRepository;
-import com.telros.profiles.request.AddProfileRequest;
 import com.telros.profiles.request.EditProfileContactsRequest;
 import com.telros.profiles.request.EditProfileRequest;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class ProfileService {
+public class ProfileService implements UserDetailsService {
+
   private final ProfileRepository profileRepository;
 
   public ProfileService(ProfileRepository profileRepository) {
@@ -60,18 +63,11 @@ public class ProfileService {
   /**
    * If the error occurs during profile creation, rollback to the previous state happens
    *
-   * @param request request for profile adding to DB
+   * @param profile profile for adding to DB
    * @return id of successfully added new profile
    */
   @Transactional
-  public Long addProfile(AddProfileRequest request) {
-    var profile = new Profile();
-    profile.setFirstName(request.getFirstName());
-    profile.setLastName(request.getLastName());
-    profile.setMiddleName(request.getMiddleName());
-    profile.setEmail(request.getEmail());
-    profile.setBirthdate(request.getBirthdate());
-    profile.setPhoneNumber(request.getPhoneNumber());
+  public Long addProfile(Profile profile) {
     return profileRepository.save(profile).getId();
   }
 
@@ -147,4 +143,19 @@ public class ProfileService {
       throw new ProfileNotFoundException(id);
     }
   }
+
+  @Override
+  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    return getByUsername(username);
+  }
+
+  public UserDetailsService userDetailsService() {
+    return this::getByUsername;
+  }
+
+  private UserDetails getByUsername(String username) {
+    return profileRepository.findByUsername(username)
+        .orElseThrow(() -> new ProfileNotFoundException(username));
+  }
+
 }

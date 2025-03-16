@@ -12,6 +12,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpClientErrorException;
 
 @ControllerAdvice
 public class CustomRestExceptionHandler {
@@ -85,6 +86,22 @@ public class CustomRestExceptionHandler {
       DataIntegrityViolationException ex) {
     ErrorResponse errorResponse =
         new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    return new ResponseEntity<>(
+        errorResponse, new HttpHeaders(), errorResponse.status());
+  }
+
+  /**
+   * Handles HttpClientErrorException, which is thrown
+   * when the unauthorized user performs requests
+   *
+   * @param ex exception
+   * @return response with HTTP code and exception message
+   */
+  @ExceptionHandler({HttpClientErrorException.class})
+  public ResponseEntity<Object> handlerHttpClientErrorException(
+      HttpClientErrorException ex) {
+    ErrorResponse errorResponse =
+        new ErrorResponse(HttpStatus.FORBIDDEN, ex.getMessage());
     return new ResponseEntity<>(
         errorResponse, new HttpHeaders(), errorResponse.status());
   }
